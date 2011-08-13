@@ -434,6 +434,11 @@ static int tegra_touch_thread(void *pdata)
 									input_report_abs(touch->input_dev, ABS_MT_POSITION_Y, y[i]);
 									input_report_abs(touch->input_dev, ABS_MT_TOUCH_MAJOR, pressure[i]);
 									input_report_abs(touch->input_dev, ABS_MT_WIDTH_MAJOR, width[i]);
+#ifdef CONFIG_ERGOEN_MAVERICK_TOUCH
+									input_report_abs(touch->input_dev, ABS_X, x[i]);
+									input_report_abs(touch->input_dev, ABS_Y, y[i]);
+									input_report_key(touch->input_dev, BTN_TOUCH, 1);
+#endif
 
 									input_mt_sync(touch->input_dev);
 									touch_fingerprint(DebugMsgPrint, "[TOUCH] Finger1 Press x = %d, y = %d, width = %d\n", x[i], y[i], width[i]);
@@ -703,6 +708,12 @@ static int tegra_touch_thread(void *pdata)
 
 							if(Prev_ToolDown[i] == NV_TRUE)
 							{
+#ifdef CONFIG_ERGOEN_MAVERICK_TOUCH
+								if( i == 0)
+								{
+									input_report_key(touch->input_dev,BTN_TOUCH, 0);
+								}
+#endif
 								touch_fingerprint(DebugMsgPrint, "[TOUCH] Finger%d Release\n", i+1);
 							}
 						}

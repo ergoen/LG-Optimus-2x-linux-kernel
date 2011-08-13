@@ -292,6 +292,12 @@ config ONETOUCH_TEGRA_ODM
 	help
 	  Adds a touchscreen input device for drivers written using NVIDIA's
 	  Tegra ODM kit interface
+config ERGOEN_MAVERICK_TOUCH
+	boolean "Enable touchscreen on systems where multitouch is not supported"
+	depends on ARCH_TEGRA && TEGRA_NVRM
+	default n
+	help
+	  Sends single touch events aswell as multitouch events to the OS.
 
 config TOUCHSCREEN_TOUCHRIGHT
 	tristate "Touchright serial touchscreen"
