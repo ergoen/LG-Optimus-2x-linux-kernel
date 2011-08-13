@@ -18,6 +18,13 @@ config FB_TEGRA_DUMMY
 	  expected to happen prior to the kernel start-up for this driver to
 	  function.
 
+config FB_TEGRA_REFRESH
+	boolean "Tegra framebuffer dumb refresh thread"
+	depends on FB_TEGRA
+	default n
+	help
+	  This forces the framebuffer to repaint the screen every 50 ms.
+
 config FB_TEGRA_GRHOST
 	tristate "Tegra graphics host driver"
 	depends on FB_TEGRA && TEGRA_IOVMM

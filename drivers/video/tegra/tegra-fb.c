@@ -316,6 +316,27 @@ int tegra_fb_sync(struct fb_info *info)
 	return 0;
 }
 
+#ifdef CONFIG_FB_TEGRA_REFRESH
+static int tegra_refresh_thread(void *v)
+{
+	struct fb_info *info;
+
+	daemonize("tegra_refreshd");
+	allow_signal(SIGKILL);
+
+	while(1) {
+		msleep(50);
+
+		if(num_registered_fb > 0) {
+			info = registered_fb[0];
+			tegra_fb_pan_display(&info->var, info);
+		}
+	}
+
+	return 0;
+}
+#endif
+
 static int tegra_plat_probe( struct platform_device *d )
 {
 	NvError e;
@@ -391,6 +412,10 @@ static int tegra_plat_probe( struct platform_device *d )
 	printk("nvtegrafb: base address: %x physical: %x\n",
 		(unsigned int)tegra_fb_info.screen_base,
 		(unsigned int)s_fb_addr );
+
+#ifdef CONFIG_FB_TEGRA_REFRESH
+	kernel_thread(tegra_refresh_thread, NULL, CLONE_KERNEL);
+#endif
 
 	register_framebuffer(&tegra_fb_info);
 
